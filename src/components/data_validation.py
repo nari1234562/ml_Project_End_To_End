@@ -49,10 +49,4 @@ class DataValidation:
 
         except Exception as e:
             raise CustomException(e, sys)
-if __name__ == "__main__":
-    try:
-        data_validation = DataValidation()
-        status = data_validation.validate_all_columns()
-        logging.info(f"Validation Status: {status}")
-    except Exception as e:
-        raise CustomException(e, sys)        
+   

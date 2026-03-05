@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loan Prediction Web App</title>
+    <style>
+        body { font-family: Arial; margin: 40px; background-color: #f4f4f4; }
+        h1 { color: #333; }
+        form { background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+        input, select { width: 250px; margin-bottom: 10px; padding: 5px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        button { padding: 10px 20px; margin-top: 15px; cursor: pointer; background-color: #4CAF50; color: #fff; border: none; border-radius: 5px; }
+        .result, .inputs-display { margin-top: 20px; background-color: #fff; padding: 15px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+        .inputs-display ul { list-style: none; padding-left: 0; }
+        .inputs-display li { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Loan Prediction Web App</h1>
+
+    <form action="{{ url_for('predict_datapoint') }}" method="post">
+        <label>Age:</label>
+        <input type="number" name="age" min="18" max="100" required value="{{ inputs.age if inputs else '' }}">
+
+        <label>Gender:</label>
+        <select name="gender" required>
+            <option disabled value="">Select Gender</option>
+            <option value="male" {% if inputs and inputs.gender == 'male' %}selected{% endif %}>Male</option>
+            <option value="female" {% if inputs and inputs.gender == 'female' %}selected{% endif %}>Female</option>
+        </select>
+
+        <label>Education Level:</label>
+        <select name="education_level" required>
+            <option disabled value="">Select Education</option>
+            <option value="High School" {% if inputs and inputs.education_level == 'High School' %}selected{% endif %}>High School</option>
+            <option value="Associate" {% if inputs and inputs.education_level == 'Associate' %}selected{% endif %}>Associate</option>
+            <option value="Bachelor" {% if inputs and inputs.education_level == 'Bachelor' %}selected{% endif %}>Bachelor</option>
+            <option value="Master" {% if inputs and inputs.education_level == 'Master' %}selected{% endif %}>Master</option>
+            <option value="Doctorate" {% if inputs and inputs.education_level == 'Doctorate' %}selected{% endif %}>Doctorate</option>
+        </select>
+
+        <label>Annual Income:</label>
+        <input type="number" name="annual_income" min="0" step="0.01" required value="{{ inputs.annual_income if inputs else '' }}">
+
+        <label>Employment Experience (Years):</label>
+        <input type="number" name="employment_experience_years" min="0" max="50" step="0.1" required value="{{ inputs.employment_experience_years if inputs else '' }}">
+
+        <label>Home Ownership Status:</label>
+        <select name="home_ownership_status" required>
+            <option disabled value="">Select Ownership</option>
+            <option value="OWN" {% if inputs and inputs.home_ownership_status == 'OWN' %}selected{% endif %}>OWN</option>
+            <option value="RENT" {% if inputs and inputs.home_ownership_status == 'RENT' %}selected{% endif %}>RENT</option>
+            <option value="MORTGAGE" {% if inputs and inputs.home_ownership_status == 'MORTGAGE' %}selected{% endif %}>MORTGAGE</option>
+        </select>
+
+        <label>Loan Amount:</label>
+        <input type="number" name="loan_amount" min="0" step="0.01" required value="{{ inputs.loan_amount if inputs else '' }}">
+
+        <label>Loan Purpose:</label>
+        <select name="loan_purpose" required>
+            <option disabled value="">Select Purpose</option>
+            <option value="PERSONAL" {% if inputs and inputs.loan_purpose == 'PERSONAL' %}selected{% endif %}>PERSONAL</option>
+            <option value="HOME" {% if inputs and inputs.loan_purpose == 'HOME' %}selected{% endif %}>HOME</option>
+            <option value="VEHICLE" {% if inputs and inputs.loan_purpose == 'VEHICLE' %}selected{% endif %}>VEHICLE</option>
+            <option value="EDUCATION" {% if inputs and inputs.loan_purpose == 'EDUCATION' %}selected{% endif %}>EDUCATION</option>
+        </select>
+
+        <label>Interest Rate (%):</label>
+        <input type="number" name="interest_rate" min="0" max="100" step="0.01" required value="{{ inputs.interest_rate if inputs else '' }}">
+
+        <label>Loan to Income Ratio:</label>
+        <input type="number" name="loan_to_income_ratio" min="0" max="100" step="0.01" required value="{{ inputs.loan_to_income_ratio if inputs else '' }}">
+
+        <label>Credit History Length (Years):</label>
+        <input type="number" name="credit_history_length_years" min="0" max="50" step="0.1" required value="{{ inputs.credit_history_length_years if inputs else '' }}">
+
+        <label>Credit Score:</label>
+        <input type="number" name="credit_score" min="300" max="850" required value="{{ inputs.credit_score if inputs else '' }}">
+
+        <label>Prior Default Flag:</label>
+        <select name="prior_default_flag" required>
+            <option disabled value="">Select</option>
+            <option value="0" {% if inputs and inputs.prior_default_flag == 0 %}selected{% endif %}>No</option>
+            <option value="1" {% if inputs and inputs.prior_default_flag == 1 %}selected{% endif %}>Yes</option>
+        </select>
+
+        <button type="submit">Predict Loan Status</button>
+    </form>
+
+    {% if inputs %}
+    <div class="inputs-display">
+        <h2>Your Inputs:</h2>
+        <ul>
+            {% for key, value in inputs.items() %}
+                <li><strong>{{ key.replace('_', ' ').title() }}:</strong> {{ value }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if status %}
+    <div class="result">
+        <h2>Prediction Result:</h2>
+        <p><strong>Prediction Class:</strong> {{ prediction }} (0=Accepted, 1=Rejected)</p>
+        <p><strong>Status:</strong> {{ status }}</p>
+        <p><strong>Probability of Rejection:</strong> {{ probability }}%</p>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="result" style="color:red;">
+        <p>Error: {{ error }}</p>
+    </div>
+    {% endif %}
+</body>
+</html>

@@ -5,13 +5,16 @@ from src.logger import logging
 from src.components.data_ingestion import DataIngestion
 from src.components.data_validation import DataValidation
 from src.components.data_transformation import DataTransformation
+from src.components.model_trainer import ModelTrainer
 
 
 def run_training_pipeline():
     try:
         logging.info("Training Pipeline Started")
 
+        # ==============================
         # 1️⃣ DATA INGESTION
+        # ==============================
         logging.info("Starting Data Ingestion")
 
         ingestion = DataIngestion()
@@ -19,7 +22,9 @@ def run_training_pipeline():
 
         logging.info("Data Ingestion Completed")
 
+        # ==============================
         # 2️⃣ DATA VALIDATION
+        # ==============================
         logging.info("Starting Data Validation")
 
         validation = DataValidation()
@@ -30,7 +35,9 @@ def run_training_pipeline():
 
         logging.info("Data Validation Passed")
 
+        # ==============================
         # 3️⃣ DATA TRANSFORMATION
+        # ==============================
         logging.info("Starting Data Transformation")
 
         data_transformation = DataTransformation()
@@ -41,6 +48,20 @@ def run_training_pipeline():
         )
 
         logging.info("Data Transformation Completed")
+
+        # ==============================
+        # 4️⃣ MODEL TRAINER
+        # ==============================
+        logging.info("Starting Model Training")
+
+        model_trainer = ModelTrainer()
+
+        best_model_score = model_trainer.initiate_model_trainer(
+            train_array=train_arr,
+            test_array=test_arr
+        )
+
+        logging.info(f"Model Training Completed. Best F1 Score: {best_model_score}")
 
         logging.info("Training Pipeline Completed Successfully")
 
